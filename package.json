@@ -35,6 +35,8 @@
     "build": "stencil build",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil-test",
+    "predeploy": "stencil build",
+    "deploy": "gh-pages -d www",
     "test:watch": "stencil-test --watch",
     "generate": "stencil generate"
   },

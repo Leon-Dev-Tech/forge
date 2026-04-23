@@ -6,33 +6,18 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
+    interface ChildLight {
     }
-}
-declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface ImgMfeBridge {
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
-    };
-    interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+    interface ImgMfeSafe {
     }
-}
-declare namespace LocalJSX {
+    interface ImgReproLight {
+    }
+    interface ImgReproShadow {
+    }
+    interface ImgWeixinBridge {
+    }
     interface MyComponent {
         /**
           * The first name
@@ -47,6 +32,98 @@ declare namespace LocalJSX {
          */
         "middle"?: string;
     }
+    interface ParentShadow {
+    }
+}
+declare global {
+    interface HTMLChildLightElement extends Components.ChildLight, HTMLStencilElement {
+    }
+    var HTMLChildLightElement: {
+        prototype: HTMLChildLightElement;
+        new (): HTMLChildLightElement;
+    };
+    interface HTMLImgMfeBridgeElement extends Components.ImgMfeBridge, HTMLStencilElement {
+    }
+    var HTMLImgMfeBridgeElement: {
+        prototype: HTMLImgMfeBridgeElement;
+        new (): HTMLImgMfeBridgeElement;
+    };
+    interface HTMLImgMfeSafeElement extends Components.ImgMfeSafe, HTMLStencilElement {
+    }
+    var HTMLImgMfeSafeElement: {
+        prototype: HTMLImgMfeSafeElement;
+        new (): HTMLImgMfeSafeElement;
+    };
+    interface HTMLImgReproLightElement extends Components.ImgReproLight, HTMLStencilElement {
+    }
+    var HTMLImgReproLightElement: {
+        prototype: HTMLImgReproLightElement;
+        new (): HTMLImgReproLightElement;
+    };
+    interface HTMLImgReproShadowElement extends Components.ImgReproShadow, HTMLStencilElement {
+    }
+    var HTMLImgReproShadowElement: {
+        prototype: HTMLImgReproShadowElement;
+        new (): HTMLImgReproShadowElement;
+    };
+    interface HTMLImgWeixinBridgeElement extends Components.ImgWeixinBridge, HTMLStencilElement {
+    }
+    var HTMLImgWeixinBridgeElement: {
+        prototype: HTMLImgWeixinBridgeElement;
+        new (): HTMLImgWeixinBridgeElement;
+    };
+    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    }
+    var HTMLMyComponentElement: {
+        prototype: HTMLMyComponentElement;
+        new (): HTMLMyComponentElement;
+    };
+    interface HTMLParentShadowElement extends Components.ParentShadow, HTMLStencilElement {
+    }
+    var HTMLParentShadowElement: {
+        prototype: HTMLParentShadowElement;
+        new (): HTMLParentShadowElement;
+    };
+    interface HTMLElementTagNameMap {
+        "child-light": HTMLChildLightElement;
+        "img-mfe-bridge": HTMLImgMfeBridgeElement;
+        "img-mfe-safe": HTMLImgMfeSafeElement;
+        "img-repro-light": HTMLImgReproLightElement;
+        "img-repro-shadow": HTMLImgReproShadowElement;
+        "img-weixin-bridge": HTMLImgWeixinBridgeElement;
+        "my-component": HTMLMyComponentElement;
+        "parent-shadow": HTMLParentShadowElement;
+    }
+}
+declare namespace LocalJSX {
+    interface ChildLight {
+    }
+    interface ImgMfeBridge {
+    }
+    interface ImgMfeSafe {
+    }
+    interface ImgReproLight {
+    }
+    interface ImgReproShadow {
+    }
+    interface ImgWeixinBridge {
+    }
+    interface MyComponent {
+        /**
+          * The first name
+         */
+        "first"?: string;
+        /**
+          * The last name
+         */
+        "last"?: string;
+        /**
+          * The middle name
+         */
+        "middle"?: string;
+    }
+    interface ParentShadow {
+    }
 
     interface MyComponentAttributes {
         "first": string;
@@ -55,14 +132,28 @@ declare namespace LocalJSX {
     }
 
     interface IntrinsicElements {
+        "child-light": ChildLight;
+        "img-mfe-bridge": ImgMfeBridge;
+        "img-mfe-safe": ImgMfeSafe;
+        "img-repro-light": ImgReproLight;
+        "img-repro-shadow": ImgReproShadow;
+        "img-weixin-bridge": ImgWeixinBridge;
         "my-component": Omit<MyComponent, keyof MyComponentAttributes> & { [K in keyof MyComponent & keyof MyComponentAttributes]?: MyComponent[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `attr:${K}`]?: MyComponentAttributes[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `prop:${K}`]?: MyComponent[K] };
+        "parent-shadow": ParentShadow;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "child-light": LocalJSX.IntrinsicElements["child-light"] & JSXBase.HTMLAttributes<HTMLChildLightElement>;
+            "img-mfe-bridge": LocalJSX.IntrinsicElements["img-mfe-bridge"] & JSXBase.HTMLAttributes<HTMLImgMfeBridgeElement>;
+            "img-mfe-safe": LocalJSX.IntrinsicElements["img-mfe-safe"] & JSXBase.HTMLAttributes<HTMLImgMfeSafeElement>;
+            "img-repro-light": LocalJSX.IntrinsicElements["img-repro-light"] & JSXBase.HTMLAttributes<HTMLImgReproLightElement>;
+            "img-repro-shadow": LocalJSX.IntrinsicElements["img-repro-shadow"] & JSXBase.HTMLAttributes<HTMLImgReproShadowElement>;
+            "img-weixin-bridge": LocalJSX.IntrinsicElements["img-weixin-bridge"] & JSXBase.HTMLAttributes<HTMLImgWeixinBridgeElement>;
             "my-component": LocalJSX.IntrinsicElements["my-component"] & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "parent-shadow": LocalJSX.IntrinsicElements["parent-shadow"] & JSXBase.HTMLAttributes<HTMLParentShadowElement>;
         }
     }
 }
