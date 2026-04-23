@@ -1,0 +1,1 @@
+import{r as t,h as s}from"./p-CreKOX2x.js";import{format as r}from"./index.esm.js";const e=class{constructor(s){t(this,s)}first;middle;last;getText(){return r(this.first,this.middle,this.last)}render(){return s("div",{key:"edcd595f3b87cfa751442fba79e07a8823826cbc"},"Hello, World! I'm ",this.getText())}};e.style=":host{display:block}";export{e as my_component}
