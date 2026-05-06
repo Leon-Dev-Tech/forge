@@ -19,8 +19,140 @@
     </style>
   </head>
   <body>
+    <!-- HOST APP BRIDGE SCRIPT (Simulating Base Application) -->
+    <script>
+      (function() {
+        const activeGhosts = new Map();
+        
+        function updateGhosts() {
+          activeGhosts.forEach((data, target) => {
+            const { ghostImg, getRect } = data;
+            const rect = getRect();
+            if (rect.width === 0 || rect.height === 0 || rect.bottom < 0 || rect.top > window.innerHeight) {
+              ghostImg.style.display = 'none';
+            } else {
+              ghostImg.style.display = 'block';
+              ghostImg.style.top = rect.top + 'px';
+              ghostImg.style.left = rect.left + 'px';
+              ghostImg.style.width = rect.width + 'px';
+              ghostImg.style.height = rect.height + 'px';
+            }
+          });
+        }
+
+        window.addEventListener('scroll', updateGhosts, { passive: true, capture: true });
+        window.addEventListener('resize', updateGhosts, { passive: true });
+
+        window.addEventListener('WECOM_GHOST_REGISTER', async (e) => {
+          const target = e.target;
+          const { src, getRect } = e.detail;
+          
+          if (activeGhosts.has(target)) return;
+
+          const data = { getRect };
+          activeGhosts.set(target, data); // Set early to prevent duplicate requests
+
+          try {
+            // Fetch the image via JS to ensure cookies/credentials are included.
+            // This prevents the native WeChat layer from failing on auth-required images.
+            const response = await fetch(src, { credentials: 'include' });
+            if (!response.ok) throw new Error('Network fetch failed');
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            data.objectUrl = objectUrl; // Save for cleanup
+
+            // Verify the target wasn't unmounted while fetching
+            if (!activeGhosts.has(target)) {
+              URL.revokeObjectURL(objectUrl);
+              return;
+            }
+
+            const ghostImg = document.createElement('img');
+            ghostImg.src = objectUrl;
+            ghostImg.style.position = 'fixed';
+            ghostImg.style.opacity = '0.01';
+            ghostImg.style.zIndex = '999999';
+            ghostImg.style.pointerEvents = 'auto';
+            ghostImg.style.transition = 'none';
+            ghostImg.style.userSelect = 'none';
+            ghostImg.style.webkitUserSelect = 'none';
+            ghostImg.setAttribute('data-wecom-host-ghost', 'true');
+            
+            ghostImg.addEventListener('click', (ev) => {
+              target.dispatchEvent(new CustomEvent('click', { bubbles: true, composed: true, detail: ev }));
+            });
+
+            document.body.appendChild(ghostImg);
+            data.ghostImg = ghostImg;
+            
+            if (typeof ResizeObserver !== 'undefined') {
+              const ro = new ResizeObserver(() => updateGhosts());
+              ro.observe(target);
+              data.ro = ro;
+            }
+            
+            updateGhosts();
+          } catch (err) {
+            console.error('Failed to create authenticated ghost image:', err);
+            // Fallback to normal src if fetch fails (e.g. CORS issues on public images)
+            if (activeGhosts.has(target)) {
+              const ghostImg = document.createElement('img');
+              ghostImg.src = src;
+              ghostImg.style.position = 'fixed';
+              ghostImg.style.opacity = '0.01';
+              ghostImg.style.zIndex = '999999';
+              ghostImg.style.pointerEvents = 'auto';
+              ghostImg.style.transition = 'none';
+              ghostImg.style.userSelect = 'none';
+              ghostImg.style.webkitUserSelect = 'none';
+              ghostImg.setAttribute('data-wecom-host-ghost', 'true');
+              
+              ghostImg.addEventListener('click', (ev) => {
+                target.dispatchEvent(new CustomEvent('click', { bubbles: true, composed: true, detail: ev }));
+              });
+
+              document.body.appendChild(ghostImg);
+              data.ghostImg = ghostImg;
+              
+              if (typeof ResizeObserver !== 'undefined') {
+                const ro = new ResizeObserver(() => updateGhosts());
+                ro.observe(target);
+                data.ro = ro;
+              }
+              
+              updateGhosts();
+            }
+          }
+        });
+
+        window.addEventListener('WECOM_GHOST_UNREGISTER', (e) => {
+          const target = e.target;
+          if (activeGhosts.has(target)) {
+            const data = activeGhosts.get(target);
+            if (data.ghostImg && data.ghostImg.parentNode) {
+              data.ghostImg.parentNode.removeChild(data.ghostImg);
+            }
+            if (data.ro) {
+              data.ro.disconnect();
+            }
+            if (data.objectUrl) {
+              URL.revokeObjectURL(data.objectUrl);
+            }
+            activeGhosts.delete(target);
+          }
+        });
+      })();
+    </script>
+
     <h1>WeChat Image Long-press Solution</h1>
     <p>This page demonstrates why images inside Shadow DOM cannot be long-pressed in WeChat and provides solutions.</p>
+
+    <!-- 0. Best MFE Architecture: Host App Bridge -->
+    <section class="success" style="border-left: 5px solid teal; background-color: #f0fdfa;">
+      <h2>🌟 Recommended Architecture: MFE Event -> Host Bridge</h2>
+      <p><strong>Use Case:</strong> Perfect for strict micro-frontend environments. The MFE component emits a <code>WECOM_GHOST_REGISTER</code> event and never touches the global <code>document</code>. The Host application (Base) listens to the event and safely mounts the ghost image to bypass WeCom restrictions.</p>
+      <img-wecom-host-bridge></img-wecom-host-bridge>
+    </section>
 
     <!-- 0. New Base64 Solution -->
     <section class="info" style="border-left: 5px solid purple; background-color: #fcfaff;">

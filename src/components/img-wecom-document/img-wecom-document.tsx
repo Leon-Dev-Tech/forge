@@ -14,7 +14,7 @@ export class ImgWecomDocument {
 
   componentDidLoad() {
     this.boundUpdatePosition = this.updateGhostPosition.bind(this);
-    this.createGhostImage();
+    // Do NOT create ghost image here. Wait for onLoad to prevent WeCom concurrent request bug.
     this.setupTracking();
   }
 
@@ -22,27 +22,29 @@ export class ImgWecomDocument {
     this.cleanupGhostImage();
   }
 
+  private handleImageLoad = () => {
+    // Original image has loaded safely. Now we can create the ghost image.
+    if (!this.ghostImage) {
+      this.createGhostImage();
+    }
+    this.boundUpdatePosition();
+  };
+
   private createGhostImage() {
-    // Use ownerDocument to avoid direct 'document' global variable usage
     const doc = this.el.ownerDocument;
     if (!doc) return;
 
     this.ghostImage = doc.createElement('img');
     this.ghostImage.src = this.src;
-    // Position fixed makes it easy to stick to the viewport position provided by getBoundingClientRect()
     this.ghostImage.style.position = 'fixed';
-    // Opacity 0.01 is visually invisible but often passes browser/WeChat hit-test checks for image saving
     this.ghostImage.style.opacity = '0.01'; 
     this.ghostImage.style.zIndex = '999999';
-    this.ghostImage.style.pointerEvents = 'auto'; // Must receive touch events to trigger long-press
-    this.ghostImage.style.transition = 'none'; // Ensure no delay when moving
+    this.ghostImage.style.pointerEvents = 'auto';
+    this.ghostImage.style.transition = 'none';
     this.ghostImage.style.userSelect = 'none';
     this.ghostImage.style.webkitUserSelect = 'none';
-    
-    // Optional: add some inline identifier for debugging
     this.ghostImage.setAttribute('data-wecom-ghost', 'true');
 
-    // Forward clicks back to the original element if needed
     this.ghostImage.addEventListener('click', (e) => {
       this.el.dispatchEvent(new CustomEvent('click', { bubbles: true, composed: true, detail: e }));
     });
@@ -114,7 +116,7 @@ export class ImgWecomDocument {
             src={this.src}
             style={{ width: '100px', height: '100px' }}
             alt="Original inside Shadow DOM"
-            onLoad={this.boundUpdatePosition}
+            onLoad={this.handleImageLoad}
           />
         </div>
       </Host>
