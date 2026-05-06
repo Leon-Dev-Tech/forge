@@ -29,50 +29,100 @@
         window.addEventListener('scroll', updateGhosts, { passive: true, capture: true });
         window.addEventListener('resize', updateGhosts, { passive: true });
 
-        window.addEventListener('WECOM_GHOST_REGISTER', (e) => {
+        window.addEventListener('WECOM_GHOST_REGISTER', async (e) => {
           const target = e.target;
           const { src, getRect } = e.detail;
           
           if (activeGhosts.has(target)) return;
 
-          const ghostImg = document.createElement('img');
-          ghostImg.src = src;
-          ghostImg.style.position = 'fixed';
-          ghostImg.style.opacity = '0.01';
-          ghostImg.style.zIndex = '999999';
-          ghostImg.style.pointerEvents = 'auto';
-          ghostImg.style.transition = 'none';
-          ghostImg.style.userSelect = 'none';
-          ghostImg.style.webkitUserSelect = 'none';
-          ghostImg.setAttribute('data-wecom-host-ghost', 'true');
-          
-          ghostImg.addEventListener('click', (ev) => {
-            target.dispatchEvent(new CustomEvent('click', { bubbles: true, composed: true, detail: ev }));
-          });
+          const data = { getRect };
+          activeGhosts.set(target, data); // Set early to prevent duplicate requests
 
-          document.body.appendChild(ghostImg);
-          
-          const data = { ghostImg, getRect };
-          activeGhosts.set(target, data);
-          
-          if (typeof ResizeObserver !== 'undefined') {
-            const ro = new ResizeObserver(() => updateGhosts());
-            ro.observe(target);
-            data.ro = ro;
+          try {
+            // Fetch the image via JS to ensure cookies/credentials are included.
+            // This prevents the native WeChat layer from failing on auth-required images.
+            const response = await fetch(src, { credentials: 'include' });
+            if (!response.ok) throw new Error('Network fetch failed');
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            data.objectUrl = objectUrl; // Save for cleanup
+
+            // Verify the target wasn't unmounted while fetching
+            if (!activeGhosts.has(target)) {
+              URL.revokeObjectURL(objectUrl);
+              return;
+            }
+
+            const ghostImg = document.createElement('img');
+            ghostImg.src = objectUrl;
+            ghostImg.style.position = 'fixed';
+            ghostImg.style.opacity = '0.01';
+            ghostImg.style.zIndex = '999999';
+            ghostImg.style.pointerEvents = 'auto';
+            ghostImg.style.transition = 'none';
+            ghostImg.style.userSelect = 'none';
+            ghostImg.style.webkitUserSelect = 'none';
+            ghostImg.setAttribute('data-wecom-host-ghost', 'true');
+            
+            ghostImg.addEventListener('click', (ev) => {
+              target.dispatchEvent(new CustomEvent('click', { bubbles: true, composed: true, detail: ev }));
+            });
+
+            document.body.appendChild(ghostImg);
+            data.ghostImg = ghostImg;
+            
+            if (typeof ResizeObserver !== 'undefined') {
+              const ro = new ResizeObserver(() => updateGhosts());
+              ro.observe(target);
+              data.ro = ro;
+            }
+            
+            updateGhosts();
+          } catch (err) {
+            console.error('Failed to create authenticated ghost image:', err);
+            // Fallback to normal src if fetch fails (e.g. CORS issues on public images)
+            if (activeGhosts.has(target)) {
+              const ghostImg = document.createElement('img');
+              ghostImg.src = src;
+              ghostImg.style.position = 'fixed';
+              ghostImg.style.opacity = '0.01';
+              ghostImg.style.zIndex = '999999';
+              ghostImg.style.pointerEvents = 'auto';
+              ghostImg.style.transition = 'none';
+              ghostImg.style.userSelect = 'none';
+              ghostImg.style.webkitUserSelect = 'none';
+              ghostImg.setAttribute('data-wecom-host-ghost', 'true');
+              
+              ghostImg.addEventListener('click', (ev) => {
+                target.dispatchEvent(new CustomEvent('click', { bubbles: true, composed: true, detail: ev }));
+              });
+
+              document.body.appendChild(ghostImg);
+              data.ghostImg = ghostImg;
+              
+              if (typeof ResizeObserver !== 'undefined') {
+                const ro = new ResizeObserver(() => updateGhosts());
+                ro.observe(target);
+                data.ro = ro;
+              }
+              
+              updateGhosts();
+            }
           }
-          
-          updateGhosts();
         });
 
         window.addEventListener('WECOM_GHOST_UNREGISTER', (e) => {
           const target = e.target;
           if (activeGhosts.has(target)) {
             const data = activeGhosts.get(target);
-            if (data.ghostImg.parentNode) {
+            if (data.ghostImg && data.ghostImg.parentNode) {
               data.ghostImg.parentNode.removeChild(data.ghostImg);
             }
             if (data.ro) {
               data.ro.disconnect();
+            }
+            if (data.objectUrl) {
+              URL.revokeObjectURL(data.objectUrl);
             }
             activeGhosts.delete(target);
           }
