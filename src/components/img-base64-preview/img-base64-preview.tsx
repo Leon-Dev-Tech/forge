@@ -65,18 +65,56 @@ export class ImgBase64Preview {
     }
   }
 
-  private handleImageClick = () => {
+  private pressTimer: any;
+
+  private triggerPreview = () => {
     if (!this.base64Data) return;
     const windowAny = window as any;
-      console.log(this.base64Data)
+    console.log('Triggering preview with base64 data');
     if (windowAny.WeixinJSBridge) {
       windowAny.WeixinJSBridge.invoke('imagePreview', {
         current: this.base64Data,
         urls: [this.base64Data],
       });
     } else {
-      alert('Base64 ready! In WeChat, this would open the native preview.');
+      alert('Long press detected! In WeChat, this would open the native preview.');
     }
+  };
+
+  private handleTouchStart = (e: TouchEvent) => {
+    // Only handle single touch
+    if (e.touches.length > 1) return;
+    
+    this.pressTimer = setTimeout(() => {
+      this.triggerPreview();
+    }, 800); // 800ms for long press
+  };
+
+  private handleMouseDown = () => {
+    this.pressTimer = setTimeout(() => {
+      this.triggerPreview();
+    }, 800);
+  };
+
+  private handleMouseUp = () => {
+    clearTimeout(this.pressTimer);
+  };
+
+  private handleMouseLeave = () => {
+    clearTimeout(this.pressTimer);
+  };
+
+  private handleTouchEnd = () => {
+    clearTimeout(this.pressTimer);
+  };
+
+  private handleTouchMove = () => {
+    clearTimeout(this.pressTimer);
+  };
+
+  private handleContextMenu = () => {
+    // Optional: prevent default context menu if long press is handled
+    // e.preventDefault();
   };
 
   render() {
@@ -127,11 +165,17 @@ export class ImgBase64Preview {
           <div style={{ textAlign: 'center', background: '#f9f9f9', padding: '10px', borderRadius: '4px' }}>
             {this.base64Data ? (
               <div>
-                <p style={{ fontSize: '12px', color: 'green', marginBottom: '8px' }}>✓ Success! Click image to preview.</p>
+                <p style={{ fontSize: '12px', color: 'green', marginBottom: '8px' }}>✓ Success! Long press image to preview.</p>
                 <img
                   src={this.base64Data}
-                  onClick={this.handleImageClick}
-                  style={{ maxWidth: '100%', maxHeight: '150px', cursor: 'pointer' }}
+                  onTouchStart={this.handleTouchStart}
+                  onTouchEnd={this.handleTouchEnd}
+                  onTouchMove={this.handleTouchMove}
+                  onMouseDown={this.handleMouseDown}
+                  onMouseUp={this.handleMouseUp}
+                  onMouseLeave={this.handleMouseLeave}
+                  onContextMenu={this.handleContextMenu}
+                  style={{ maxWidth: '100%', maxHeight: '150px', cursor: 'pointer', userSelect: 'none', WebkitUserSelect: 'none' }}
                 />
               </div>
             ) : (

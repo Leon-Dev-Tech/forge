@@ -22,6 +22,12 @@ export namespace Components {
     }
     interface ImgReproShadow {
     }
+    interface ImgWecomDocument {
+        /**
+          * @default 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
+         */
+        "src": string;
+    }
     interface ImgWeixinBridge {
     }
     interface MyComponent {
@@ -78,6 +84,12 @@ declare global {
         prototype: HTMLImgReproShadowElement;
         new (): HTMLImgReproShadowElement;
     };
+    interface HTMLImgWecomDocumentElement extends Components.ImgWecomDocument, HTMLStencilElement {
+    }
+    var HTMLImgWecomDocumentElement: {
+        prototype: HTMLImgWecomDocumentElement;
+        new (): HTMLImgWecomDocumentElement;
+    };
     interface HTMLImgWeixinBridgeElement extends Components.ImgWeixinBridge, HTMLStencilElement {
     }
     var HTMLImgWeixinBridgeElement: {
@@ -103,6 +115,7 @@ declare global {
         "img-mfe-safe": HTMLImgMfeSafeElement;
         "img-repro-light": HTMLImgReproLightElement;
         "img-repro-shadow": HTMLImgReproShadowElement;
+        "img-wecom-document": HTMLImgWecomDocumentElement;
         "img-weixin-bridge": HTMLImgWeixinBridgeElement;
         "my-component": HTMLMyComponentElement;
         "parent-shadow": HTMLParentShadowElement;
@@ -124,6 +137,12 @@ declare namespace LocalJSX {
     interface ImgReproLight {
     }
     interface ImgReproShadow {
+    }
+    interface ImgWecomDocument {
+        /**
+          * @default 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
+         */
+        "src"?: string;
     }
     interface ImgWeixinBridge {
     }
@@ -147,6 +166,9 @@ declare namespace LocalJSX {
     interface ImgBase64PreviewAttributes {
         "initialSrc": string;
     }
+    interface ImgWecomDocumentAttributes {
+        "src": string;
+    }
     interface MyComponentAttributes {
         "first": string;
         "middle": string;
@@ -160,6 +182,7 @@ declare namespace LocalJSX {
         "img-mfe-safe": ImgMfeSafe;
         "img-repro-light": ImgReproLight;
         "img-repro-shadow": ImgReproShadow;
+        "img-wecom-document": Omit<ImgWecomDocument, keyof ImgWecomDocumentAttributes> & { [K in keyof ImgWecomDocument & keyof ImgWecomDocumentAttributes]?: ImgWecomDocument[K] } & { [K in keyof ImgWecomDocument & keyof ImgWecomDocumentAttributes as `attr:${K}`]?: ImgWecomDocumentAttributes[K] } & { [K in keyof ImgWecomDocument & keyof ImgWecomDocumentAttributes as `prop:${K}`]?: ImgWecomDocument[K] };
         "img-weixin-bridge": ImgWeixinBridge;
         "my-component": Omit<MyComponent, keyof MyComponentAttributes> & { [K in keyof MyComponent & keyof MyComponentAttributes]?: MyComponent[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `attr:${K}`]?: MyComponentAttributes[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `prop:${K}`]?: MyComponent[K] };
         "parent-shadow": ParentShadow;
@@ -175,6 +198,7 @@ declare module "@stencil/core" {
             "img-mfe-safe": LocalJSX.IntrinsicElements["img-mfe-safe"] & JSXBase.HTMLAttributes<HTMLImgMfeSafeElement>;
             "img-repro-light": LocalJSX.IntrinsicElements["img-repro-light"] & JSXBase.HTMLAttributes<HTMLImgReproLightElement>;
             "img-repro-shadow": LocalJSX.IntrinsicElements["img-repro-shadow"] & JSXBase.HTMLAttributes<HTMLImgReproShadowElement>;
+            "img-wecom-document": LocalJSX.IntrinsicElements["img-wecom-document"] & JSXBase.HTMLAttributes<HTMLImgWecomDocumentElement>;
             "img-weixin-bridge": LocalJSX.IntrinsicElements["img-weixin-bridge"] & JSXBase.HTMLAttributes<HTMLImgWeixinBridgeElement>;
             "my-component": LocalJSX.IntrinsicElements["my-component"] & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
             "parent-shadow": LocalJSX.IntrinsicElements["parent-shadow"] & JSXBase.HTMLAttributes<HTMLParentShadowElement>;

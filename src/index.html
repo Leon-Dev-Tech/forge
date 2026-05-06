@@ -29,7 +29,14 @@
       <img-base64-preview></img-base64-preview>
     </section>
 
-    <!-- 1. The Recommended Solution -->
+    <!-- 1. WeCom Hack: Document Ghost Image -->
+    <section class="info" style="border-left: 5px solid blue; background-color: #f5f8ff;">
+      <h2>🔵 Experimental: Document Ghost Image (WeCom Hack)</h2>
+      <p><strong>Use Case:</strong> When <code>WeixinJSBridge.invoke('imagePreview')</code> fails in Enterprise WeChat (WeCom). This mounts a transparent <code>&lt;img&gt;</code> over the component in the main document's body via <code>ownerDocument</code>, allowing native hit-testing to work.</p>
+      <img-wecom-document></img-wecom-document>
+    </section>
+
+    <!-- 2. The Recommended Solution -->
     <section class="success">
       <h2>✅ Recommended: MFE Safe Bridge (globalThis)</h2>
       <p><strong>Status: Working.</strong> Bypasses Shadow DOM and <code>window</code> restrictions. Click the image to trigger native WeChat preview.</p>
