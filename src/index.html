@@ -147,6 +147,13 @@
     <h1>WeChat Image Long-press Solution</h1>
     <p>This page demonstrates why images inside Shadow DOM cannot be long-pressed in WeChat and provides solutions.</p>
 
+    <!-- 0. Slotted Light DOM Solution -->
+    <section class="success" style="border-left: 5px solid green; background-color: #f0fff4;">
+      <h2>🌟 New Solution: Slotted Light DOM Image</h2>
+      <p><strong>Use Case:</strong> Simplest and most robust. The <code>&lt;img&gt;</code> is created in Light DOM and projected via <code>&lt;slot&gt;</code>. WeChat can "see" it because it's in the Light DOM, but it's managed by the component.</p>
+      <img-slotted-safe src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"></img-slotted-safe>
+    </section>
+
     <!-- 0. Best MFE Architecture: Host App Bridge -->
     <section class="success" style="border-left: 5px solid teal; background-color: #f0fdfa;">
       <h2>🌟 Recommended Architecture: MFE Event -> Host Bridge</h2>

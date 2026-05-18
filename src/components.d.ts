@@ -22,6 +22,21 @@ export namespace Components {
     }
     interface ImgReproShadow {
     }
+    /**
+     * Solution: Slotted Light DOM Image
+     * This component solves the WeChat/WeCom Shadow DOM image recognition issue by 
+     * placing the <img> element in the Light DOM (as a child of the host element) 
+     * and projecting it into the Shadow DOM via a <slot>.
+     * Since the <img> is technically in the Light DOM, WeChat's native long-press 
+     * detection can "see" it and show the save/preview menu.
+     */
+    interface ImgSlottedSafe {
+        /**
+          * @default ''
+         */
+        "alt": string;
+        "src": string;
+    }
     interface ImgWecomDocument {
         /**
           * @default 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
@@ -90,6 +105,20 @@ declare global {
         prototype: HTMLImgReproShadowElement;
         new (): HTMLImgReproShadowElement;
     };
+    /**
+     * Solution: Slotted Light DOM Image
+     * This component solves the WeChat/WeCom Shadow DOM image recognition issue by 
+     * placing the <img> element in the Light DOM (as a child of the host element) 
+     * and projecting it into the Shadow DOM via a <slot>.
+     * Since the <img> is technically in the Light DOM, WeChat's native long-press 
+     * detection can "see" it and show the save/preview menu.
+     */
+    interface HTMLImgSlottedSafeElement extends Components.ImgSlottedSafe, HTMLStencilElement {
+    }
+    var HTMLImgSlottedSafeElement: {
+        prototype: HTMLImgSlottedSafeElement;
+        new (): HTMLImgSlottedSafeElement;
+    };
     interface HTMLImgWecomDocumentElement extends Components.ImgWecomDocument, HTMLStencilElement {
     }
     var HTMLImgWecomDocumentElement: {
@@ -127,6 +156,7 @@ declare global {
         "img-mfe-safe": HTMLImgMfeSafeElement;
         "img-repro-light": HTMLImgReproLightElement;
         "img-repro-shadow": HTMLImgReproShadowElement;
+        "img-slotted-safe": HTMLImgSlottedSafeElement;
         "img-wecom-document": HTMLImgWecomDocumentElement;
         "img-wecom-host-bridge": HTMLImgWecomHostBridgeElement;
         "img-weixin-bridge": HTMLImgWeixinBridgeElement;
@@ -150,6 +180,21 @@ declare namespace LocalJSX {
     interface ImgReproLight {
     }
     interface ImgReproShadow {
+    }
+    /**
+     * Solution: Slotted Light DOM Image
+     * This component solves the WeChat/WeCom Shadow DOM image recognition issue by 
+     * placing the <img> element in the Light DOM (as a child of the host element) 
+     * and projecting it into the Shadow DOM via a <slot>.
+     * Since the <img> is technically in the Light DOM, WeChat's native long-press 
+     * detection can "see" it and show the save/preview menu.
+     */
+    interface ImgSlottedSafe {
+        /**
+          * @default ''
+         */
+        "alt"?: string;
+        "src"?: string;
     }
     interface ImgWecomDocument {
         /**
@@ -185,6 +230,10 @@ declare namespace LocalJSX {
     interface ImgBase64PreviewAttributes {
         "initialSrc": string;
     }
+    interface ImgSlottedSafeAttributes {
+        "src": string;
+        "alt": string;
+    }
     interface ImgWecomDocumentAttributes {
         "src": string;
     }
@@ -204,6 +253,7 @@ declare namespace LocalJSX {
         "img-mfe-safe": ImgMfeSafe;
         "img-repro-light": ImgReproLight;
         "img-repro-shadow": ImgReproShadow;
+        "img-slotted-safe": Omit<ImgSlottedSafe, keyof ImgSlottedSafeAttributes> & { [K in keyof ImgSlottedSafe & keyof ImgSlottedSafeAttributes]?: ImgSlottedSafe[K] } & { [K in keyof ImgSlottedSafe & keyof ImgSlottedSafeAttributes as `attr:${K}`]?: ImgSlottedSafeAttributes[K] } & { [K in keyof ImgSlottedSafe & keyof ImgSlottedSafeAttributes as `prop:${K}`]?: ImgSlottedSafe[K] };
         "img-wecom-document": Omit<ImgWecomDocument, keyof ImgWecomDocumentAttributes> & { [K in keyof ImgWecomDocument & keyof ImgWecomDocumentAttributes]?: ImgWecomDocument[K] } & { [K in keyof ImgWecomDocument & keyof ImgWecomDocumentAttributes as `attr:${K}`]?: ImgWecomDocumentAttributes[K] } & { [K in keyof ImgWecomDocument & keyof ImgWecomDocumentAttributes as `prop:${K}`]?: ImgWecomDocument[K] };
         "img-wecom-host-bridge": Omit<ImgWecomHostBridge, keyof ImgWecomHostBridgeAttributes> & { [K in keyof ImgWecomHostBridge & keyof ImgWecomHostBridgeAttributes]?: ImgWecomHostBridge[K] } & { [K in keyof ImgWecomHostBridge & keyof ImgWecomHostBridgeAttributes as `attr:${K}`]?: ImgWecomHostBridgeAttributes[K] } & { [K in keyof ImgWecomHostBridge & keyof ImgWecomHostBridgeAttributes as `prop:${K}`]?: ImgWecomHostBridge[K] };
         "img-weixin-bridge": ImgWeixinBridge;
@@ -221,6 +271,15 @@ declare module "@stencil/core" {
             "img-mfe-safe": LocalJSX.IntrinsicElements["img-mfe-safe"] & JSXBase.HTMLAttributes<HTMLImgMfeSafeElement>;
             "img-repro-light": LocalJSX.IntrinsicElements["img-repro-light"] & JSXBase.HTMLAttributes<HTMLImgReproLightElement>;
             "img-repro-shadow": LocalJSX.IntrinsicElements["img-repro-shadow"] & JSXBase.HTMLAttributes<HTMLImgReproShadowElement>;
+            /**
+             * Solution: Slotted Light DOM Image
+             * This component solves the WeChat/WeCom Shadow DOM image recognition issue by 
+             * placing the <img> element in the Light DOM (as a child of the host element) 
+             * and projecting it into the Shadow DOM via a <slot>.
+             * Since the <img> is technically in the Light DOM, WeChat's native long-press 
+             * detection can "see" it and show the save/preview menu.
+             */
+            "img-slotted-safe": LocalJSX.IntrinsicElements["img-slotted-safe"] & JSXBase.HTMLAttributes<HTMLImgSlottedSafeElement>;
             "img-wecom-document": LocalJSX.IntrinsicElements["img-wecom-document"] & JSXBase.HTMLAttributes<HTMLImgWecomDocumentElement>;
             "img-wecom-host-bridge": LocalJSX.IntrinsicElements["img-wecom-host-bridge"] & JSXBase.HTMLAttributes<HTMLImgWecomHostBridgeElement>;
             "img-weixin-bridge": LocalJSX.IntrinsicElements["img-weixin-bridge"] & JSXBase.HTMLAttributes<HTMLImgWeixinBridgeElement>;
