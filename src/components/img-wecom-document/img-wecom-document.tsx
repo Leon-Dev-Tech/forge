@@ -52,8 +52,7 @@ export class ImgWecomDocument {
       transition: none;
       user-select: none;
       -webkit-user-select: none;
-      -webkit-touch-callout: default;
-      pointer-events: auto;
+      -webkit-touch-callout: none;
     `;
     this.ghostImage.setAttribute('data-wecom-ghost', 'true');
 
