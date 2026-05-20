@@ -42,7 +42,7 @@ export class ImgWecomHostBridge {
             alt="MFE Event Source"
             onLoad={this.handleImageLoad}
           />
-          <p style={{ fontSize: '12px', margin: '0 0 10px 0' }}>another img to compare</p>
+          <p style={{ fontSize: '12px', margin: '0 0 10px 0' }}>another img to compare(callout:none)</p>
           <img
             src={this.src}
             style={{ width: '100px', height: '100px' }}
