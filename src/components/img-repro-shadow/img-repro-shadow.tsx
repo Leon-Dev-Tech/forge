@@ -5,34 +5,39 @@ import { Component, h, Element } from '@stencil/core';
   shadow: true,
 })
 export class ImgReproShadow {
-  // 1. 获取当前组件的宿主元素
   @Element() el!: HTMLElement;
 
-  // 2. 在组件挂载到 DOM 时执行注入逻辑
   connectedCallback() {
-    // 通过宿主元素获取当前的 document 对象
     const doc = this.el.ownerDocument;
 
-    // 确保 doc 存在，并且没有被劫持过（防止页面中有多个该组件导致重复劫持）
+    // 确保 doc 存在，且未被劫持过
     if (doc && !(doc as any).__wechatShadowPatchApplied) {
       const originalElementFromPoint = doc.elementFromPoint;
       
-      // 重写当前沙箱/微前端环境下的 document 的 elementFromPoint
       doc.elementFromPoint = function (x: number, y: number) {
-        let element = originalElementFromPoint.call(doc, x, y);
+        // 1. 获取原生默认返回的最外层元素
+        let hostEl = originalElementFromPoint.call(doc, x, y);
+        let deepEl = hostEl;
         
-        while (element && element.shadowRoot) {
-          const shadowEl = element.shadowRoot.elementFromPoint(x, y);
-          if (!shadowEl || shadowEl === element) {
+        // 2. 潜入 Shadow DOM 探测最深处的节点
+        while (deepEl && deepEl.shadowRoot) {
+          const shadowEl = deepEl.shadowRoot.elementFromPoint(x, y);
+          if (!shadowEl || shadowEl === deepEl) {
             break;
           }
-          element = shadowEl;
+          deepEl = shadowEl;
         }
         
-        return element;
+        // 3. 核心防御机制：
+        // 只有当最深处的元素确实是一张图片时，才返回它给微信；
+        // 否则（点击的是容器、文字等），仍然返回最外层的宿主元素，维持 Shadow DOM 封装
+        if (deepEl && deepEl.tagName && deepEl.tagName.toLowerCase() === 'img') {
+          return deepEl;
+        }
+        
+        return hostEl;
       };
       
-      // 在当前的 doc 实例上打上标记
       (doc as any).__wechatShadowPatchApplied = true;
     }
   }
