@@ -8,6 +8,8 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface ChildLight {
     }
+    interface GrandParentShadow {
+    }
     interface ImgBase64Preview {
         /**
           * @default 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
@@ -74,6 +76,12 @@ declare global {
     var HTMLChildLightElement: {
         prototype: HTMLChildLightElement;
         new (): HTMLChildLightElement;
+    };
+    interface HTMLGrandParentShadowElement extends Components.GrandParentShadow, HTMLStencilElement {
+    }
+    var HTMLGrandParentShadowElement: {
+        prototype: HTMLGrandParentShadowElement;
+        new (): HTMLGrandParentShadowElement;
     };
     interface HTMLImgBase64PreviewElement extends Components.ImgBase64Preview, HTMLStencilElement {
     }
@@ -151,6 +159,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "child-light": HTMLChildLightElement;
+        "grand-parent-shadow": HTMLGrandParentShadowElement;
         "img-base64-preview": HTMLImgBase64PreviewElement;
         "img-mfe-bridge": HTMLImgMfeBridgeElement;
         "img-mfe-safe": HTMLImgMfeSafeElement;
@@ -166,6 +175,8 @@ declare global {
 }
 declare namespace LocalJSX {
     interface ChildLight {
+    }
+    interface GrandParentShadow {
     }
     interface ImgBase64Preview {
         /**
@@ -248,6 +259,7 @@ declare namespace LocalJSX {
 
     interface IntrinsicElements {
         "child-light": ChildLight;
+        "grand-parent-shadow": GrandParentShadow;
         "img-base64-preview": Omit<ImgBase64Preview, keyof ImgBase64PreviewAttributes> & { [K in keyof ImgBase64Preview & keyof ImgBase64PreviewAttributes]?: ImgBase64Preview[K] } & { [K in keyof ImgBase64Preview & keyof ImgBase64PreviewAttributes as `attr:${K}`]?: ImgBase64PreviewAttributes[K] } & { [K in keyof ImgBase64Preview & keyof ImgBase64PreviewAttributes as `prop:${K}`]?: ImgBase64Preview[K] };
         "img-mfe-bridge": ImgMfeBridge;
         "img-mfe-safe": ImgMfeSafe;
@@ -266,6 +278,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "child-light": LocalJSX.IntrinsicElements["child-light"] & JSXBase.HTMLAttributes<HTMLChildLightElement>;
+            "grand-parent-shadow": LocalJSX.IntrinsicElements["grand-parent-shadow"] & JSXBase.HTMLAttributes<HTMLGrandParentShadowElement>;
             "img-base64-preview": LocalJSX.IntrinsicElements["img-base64-preview"] & JSXBase.HTMLAttributes<HTMLImgBase64PreviewElement>;
             "img-mfe-bridge": LocalJSX.IntrinsicElements["img-mfe-bridge"] & JSXBase.HTMLAttributes<HTMLImgMfeBridgeElement>;
             "img-mfe-safe": LocalJSX.IntrinsicElements["img-mfe-safe"] & JSXBase.HTMLAttributes<HTMLImgMfeSafeElement>;

@@ -7,9 +7,9 @@ import { Component, h } from '@stencil/core';
 export class ParentShadow {
   render() {
     return (
-      <div style={{ border: '2px solid red', padding: '10px' }}>
-        <p>[Parent: Shadow DOM]</p>
-        <child-light></child-light>
+      <div style={{ border: '2px solid blue', padding: '10px' }}>
+        <p style={{ color: 'blue', margin: '0 0 10px 0' }}>[Nested Layer 1: Shadow DOM]</p>
+        <slot></slot>
       </div>
     );
   }
