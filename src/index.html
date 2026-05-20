@@ -144,6 +144,13 @@
       })();
     </script>
 
+        <!-- 1. WeCom Hack: Document Ghost Image -->
+    <section class="info" style="border-left: 5px solid blue; background-color: #f5f8ff;">
+      <h2>🔵 Experimental: Document Ghost Image (WeCom Hack)</h2>
+      <p><strong>Status: Working.</strong></p>
+      <img-wecom-document></img-wecom-document>
+    </section>
+
     <h1>WeChat Image Long-press Solution</h1>
     <p>This page demonstrates why images inside Shadow DOM cannot be long-pressed in WeChat and provides solutions.</p>
 
@@ -166,13 +173,6 @@
       <h2>🆕 New: Base64 + WeixinJSBridge Solution</h2>
       <p><strong>Use Case:</strong> When images require authentication (cookies) and <code>imagePreview</code> fails to fetch them. This solution fetches the image manually and converts it to Base64 before previewing.</p>
       <img-base64-preview></img-base64-preview>
-    </section>
-
-    <!-- 1. WeCom Hack: Document Ghost Image -->
-    <section class="info" style="border-left: 5px solid blue; background-color: #f5f8ff;">
-      <h2>🔵 Experimental: Document Ghost Image (WeCom Hack)</h2>
-      <p><strong>Use Case:</strong> When <code>WeixinJSBridge.invoke('imagePreview')</code> fails in Enterprise WeChat (WeCom). This mounts a transparent <code>&lt;img&gt;</code> over the component in the main document's body via <code>ownerDocument</code>, allowing native hit-testing to work.</p>
-      <img-wecom-document></img-wecom-document>
     </section>
 
     <!-- 2. The Recommended Solution -->

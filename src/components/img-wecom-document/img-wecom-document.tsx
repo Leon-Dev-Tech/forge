@@ -36,13 +36,24 @@ export class ImgWecomDocument {
 
     this.ghostImage = doc.createElement('img');
     this.ghostImage.src = this.src;
-    this.ghostImage.style.position = 'fixed';
-    this.ghostImage.style.opacity = '0.01'; 
-    this.ghostImage.style.zIndex = '999999';
-    this.ghostImage.style.pointerEvents = 'auto';
-    this.ghostImage.style.transition = 'none';
-    this.ghostImage.style.userSelect = 'none';
-    this.ghostImage.style.webkitUserSelect = 'none';
+    // this.ghostImage.style.position = 'fixed';
+    // this.ghostImage.style.opacity = '0.01'; 
+    // this.ghostImage.style.zIndex = '999999';
+    // this.ghostImage.style.pointerEvents = 'auto';
+    // this.ghostImage.style.transition = 'none';
+    // this.ghostImage.style.userSelect = 'none';
+    // this.ghostImage.style.webkitUserSelect = 'none';
+    // this.ghostImage.style.webkittouchCallout = 'none';
+    this.ghostImage.style.cssText = `
+      position: fixed;
+      opacity: 0.01;
+      z-index: 999999;
+      pointer-events: auto;
+      transition: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: default;
+    `;
     this.ghostImage.setAttribute('data-wecom-ghost', 'true');
 
     this.ghostImage.addEventListener('click', (e) => {
