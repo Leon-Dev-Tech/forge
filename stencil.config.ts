@@ -18,7 +18,13 @@ export const config: Config = {
     {
       type: 'www',
       serviceWorker: null, // disable service workers
-      baseUrl: '/'
+      baseUrl: '/',
+      copy: [
+        { 
+          src: 'WW_verify_N1fhFLFTuKySnqAt.txt',   // 这里的路径相对于 src 目录
+          dest: 'WW_verify_N1fhFLFTuKySnqAt.txt'   // 这里的路径相对于 www 产物根目录
+        }
+      ]
     },
   ],
 };
